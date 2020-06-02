@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import datetime
@@ -23,14 +17,8 @@ class ConfirmAgePatientVisitor(PatientVisitor):
         df['different'] = df['confirm_date'] - df['birth']
         df['different'] = df['different'].apply(lambda x: x.days)
         df['different'] = df['different'].apply(lambda x: x/365)
-        self.age = df[['different']]
+        df = df.rename(columns = {'different':'age'})
+        self.age = df[['age']]
         
     def getResult(self):
         return self.age
-
-
-# In[ ]:
-
-
-
-
