@@ -4,25 +4,33 @@ import datetime
 from PatientVisitor import PatientVisitor
 from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 
-class ConfirmMonthPatientVisitor(PatientVisitor):
+class ConfirmTypePatientVisitor(PatientVisitor):
     def __init__(self):
-        self.month = np.nan
+        self.type = np.nan
         
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
         confirmDatePatientVisitor.visitPatient(patient)
         confirm_date = confirmDatePatientVisitor.getResult()
-        month_list = []
+        
+        df = patient.get_record().reset_index(drop = True)
+        df['InDate'] = df['InDate'].astype('datetime64')
+        df = df[df['InDate'] == confirm_date]
+        save = -1
+        for type in list(df['Type']):
+            if int(type)>save:
+                save = int(type)
+        type_list = []
         data_list = [] 
-        for i in range(1,13,1):
-            month_list.append('month_'+str(i))
-            if i==confirm_date.month:
+        for i in range(0,3,1):
+            type_list.append('type_'+str(i))
+            if i==save:
                 data_list.append(1)
             else:
                 data_list.append(0)
-        out = pd.DataFrame(columns = month_list)
+        out = pd.DataFrame(columns = type_list)
         out.loc[0]=data_list
-        self.month = out
+        self.type = out
         
     def getResult(self):
-        return self.month
+        return self.type
