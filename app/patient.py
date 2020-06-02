@@ -20,7 +20,7 @@ class Patient():
         return self._death
     def get_record(self):
         return self._record
-    def get_inpatinet(self):
+    def get_inpatient(self):
         return self._inpatient
     def accept_vistor(self, vistor):
         vistor.visit_patient(self)

@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-from patient import Patient
+from Patient import Patient
 
 class PatientBuilder():
     def __init__(self):
-        self.result = None
+        self._result = None
 
     def build_patient(self, id, gender, birth, death, record, inpatient):
         self._result =  Patient(id, gender, birth, death, record, inpatient)

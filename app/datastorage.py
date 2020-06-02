@@ -1,12 +1,10 @@
-from patient import Patient
-
+from Patient import Patient
 
 class DataStorage():
     def __init__(self):
-        self.patient_list = []
+        self._patient_list = []
 
     def add_patient(self, patinet):
-
-        self.patient_list.append(patinet)
+        self._patient_list.append(patinet)
     def accept_visitor(self, visitor):
         visitor.visit_storage(self)

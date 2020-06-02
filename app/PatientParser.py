@@ -13,4 +13,4 @@ class PatientParser():
         self._patient_builder.build_patient(personal_info[0][0], personal_info[0][1], personal_info[0][2], personal_info[0][3], personal_record, personal_inpatient)
     
     def get_result(self):
-        return self._patient_builder
+        return self._patient_builder.get_result()

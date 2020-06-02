@@ -50,7 +50,10 @@ class InOutput():
             record_data = json.load(record_reader)
         with open('./data/inpatient.json','r') as inpatient_reader:
             inpatient_data = json.load(inpatient_reader)
-        self._build_patient_data(patient_data, record_data, inpatient_data)
+        patient_df = pd.DataFrame.from_dict(patient_data , orient='index')
+        record_df = pd.DataFrame.from_dict(record_data , orient='index')
+        inpatient_df = pd.DataFrame.from_dict(inpatient_data , orient='index')
+        self._build_patient_data(patient_df, record_df, inpatient_df)
 
     def _build_patient_data(self,patient_data, record_data, inpatient_data):
         #建立patient資料 呼叫parser builder
