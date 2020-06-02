@@ -1,5 +1,4 @@
-from IO import IO
-from inpatient_cycle import InpatientCycle
+from .io import IO
 
 
 
@@ -8,5 +7,6 @@ class Adapter:
     def __init__(self):
         pass
     def dataframe_to_json(self, dataframe):
-        return self.result
+        pass
+        # return self.result
         

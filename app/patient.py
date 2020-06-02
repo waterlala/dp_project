@@ -1,6 +1,8 @@
+import numpy as np
+import pandas as pd
 
-class Patient:
-    def __init__(self, id, gender, birth, death, record,inpatient):
+class Patient():
+    def __init__(self, id, gender, birth, death, record, inpatient):
         self._id = id
         self._gender = gender
         self._birth = birth
@@ -18,6 +20,8 @@ class Patient:
         return self._death
     def get_record(self):
         return self._record
+    def get_inpatinet(self):
+        return self._inpatient
     def accept_vistor(self, vistor):
         vistor.visit_patient(self)
     

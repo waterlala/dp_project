@@ -1,15 +1,12 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import numpy as np
 import pandas as pd
+import json
 import time
-from builder import Builder
-from parser import Parser
-from patient import Patient
+from .parser import PatientParser
+from .datastorage import DataStorage
 
 
-class IO:
+class IO():
     """
     使用整個IO之前必須呼叫兩個Funtion - 
         1.load_data() 不須輸入參數
@@ -28,49 +25,50 @@ class IO:
             取得快速死亡機率，不用輸入，輸出為float
             輸出example => 0.17911194
     """
-
     def __init__(self):
-        self.patient = []
-        self.load_data()
+        self._data_storage = DataStorage()
+        self._load_data()
         pass
     def handle_instructions(self, instructions, id):
         if(instructions == "get_personal_info"):
             return self.get_personal_info(id)
         elif(instructions == "get_icd_category_growth_trend"):
             return self.get_icd_category_growth_trend(id)
-        elif(instruction == "get_personal_inpatient_cycle"):
+        elif(instructions == "get_personal_inpatient_cycle"):
             return self.get_personal_inpatient_cycle(id)
-        elif(instruction == "get_average_of_all_the_patients_cycles")
+        elif(instructions == "get_average_of_all_the_patients_cycles"):
             return self.get_average_of_all_the_patients_cycles()
-        elif(instructions == "get_icd_of_the_same_pattern_patient"):
+        else:
+            return self._data_storage
+        #elif(instructions == "get_icd_of_the_same_pattern_patient"):
 
-    def load_data(self):
+    def _load_data(self):
         #讀json file
         with open('./patient.json','r') as patient_reader:
-            json.loads(patient_reader)
+            patient_data = json.load(patient_reader)
         with open('./record.json','r') as record_reader:
-            json.loads(record_reader)
+            record_data = json.load(record_reader)
         with open('./inpatient.json','r') as inpatient_reader:
-            json.loads(inpatient_reader)
-        self.build_patient_data(patient_reader, record_reader, inpatient_reader)
+            inpatient_data = json.load(inpatient_reader)
+        self._build_patient_data(patient_data, record_data, inpatient_data)
 
-    def build_patient_data(self,patient_reader, record_reader, inpatient_reader):
+    def _build_patient_data(self,patient_data, record_data, inpatient_data):
         #建立patient資料 呼叫parser builder
-        for i in range(0, len(patient_reader)):
-            
-            patient.append()
-        
+        for id in patient_data['ID'].values:
+            patient_parser = PatientParser()
+            patient_parser.parse_patient(patient_data, record_data, inpatient_data, id)
+            self._data_storage.add_patient(patient_parser.get_result())
         
     
     #以下要用visitor做
     def get_personal_info(self, id):
-
+        pass
     def get_icd_category_growth_trend(self, id):
-
+        pass
     def get_personal_inpatient_cycle(self, id):
-
-    def average_of_all_the_patients_cycles(self):
-
+        pass
+    def get_average_of_all_the_patients_cycles(self):
+        pass
     """
     def set_patient_by_id(self, _id):
         self._main_patient = self._patients[self._patients['ID'] == _id].reset_index(
