@@ -1,4 +1,4 @@
-from .patient import Patient
+from patient import Patient
 
 
 class DataStorage():
