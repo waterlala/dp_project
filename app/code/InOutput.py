@@ -4,6 +4,8 @@ import json
 import time
 from PatientParser import PatientParser
 from DataStorage import DataStorage
+from QuicklyDeathPatientVisitor import QuicklyDeathPatientVisitor
+from CardPatientVisitor import CardPatientVisitor
 
 
 class InOutput():
@@ -65,13 +67,34 @@ class InOutput():
     
     #以下要用visitor做
     def get_personal_info(self, id):
-        pass
+        out = pd.DataFrame(columns = ['id','gender','birthdate'])
+        patient = self._get_patient_by_id(id)
+        out.loc[0] = [patient.get_id(),patient.get_gender(),patient.get_birth()]
+        out['birthdate'] = out['birthdate'].astype('datetime64')
+        return out
     def get_icd_category_growth_trend(self, id):
-        pass
+        patient = self._get_patient_by_id(id)
+        cardPatientVisitor = CardPatientVisitor()
+        cardPatientVisitor.visitPatient(patient)
+        position = cardPatientVisitor.getResult()
+        return position
     def get_personal_inpatient_cycle(self, id):
         pass
     def get_average_of_all_the_patients_cycles(self):
         pass
+    def get_quickly_death_possible(self, id):
+        patient = self._get_patient_by_id(id)
+        quicklyDeathPatientVisitor = QuicklyDeathPatientVisitor()
+        quicklyDeathPatientVisitor.visitPatient(patient)
+        death_posible = quicklyDeathPatientVisitor.getResult()
+        return death_posible
+        
+    def _get_patient_by_id(self, id):
+        for patient in self._data_storage.iter_patient_list():
+            if id == patient.get_id():
+                search_patient = patient
+                break
+        return search_patient
     """
     def set_patient_by_id(self, _id):
         self._main_patient = self._patients[self._patients['ID'] == _id].reset_index(
