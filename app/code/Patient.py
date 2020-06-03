@@ -22,6 +22,6 @@ class Patient():
         return self._record
     def get_inpatient(self):
         return self._inpatient
-    def accept_vistor(self, vistor):
-        vistor.visit_patient(self)
+    def accept_visitor(self, visitor):
+        visitor.visitPatient(self)
     

@@ -16,35 +16,35 @@ class QuicklyDeathPatientVisitor(PatientVisitor):
     def visitPatient(self, patient):
         
         areaPatientVisitor = AreaPatientVisitor()
-        areaPatientVisitor.visitPatient(patient)
+        patient.accept_visitor(areaPatientVisitor)
         area = areaPatientVisitor.getResult()
         
         confirmMonthPatientVisitor = ConfirmMonthPatientVisitor()
-        confirmMonthPatientVisitor.visitPatient(patient)
+        patient.accept_visitor(confirmMonthPatientVisitor)
         month = confirmMonthPatientVisitor.getResult()
         
         confirmTypePatientVisitor = ConfirmTypePatientVisitor()
-        confirmTypePatientVisitor.visitPatient(patient)
+        patient.accept_visitor(confirmTypePatientVisitor)
         type = confirmTypePatientVisitor.getResult()
         
         confirmAgePatientVisitor = ConfirmAgePatientVisitor()
-        confirmAgePatientVisitor.visitPatient(patient)
+        patient.accept_visitor(confirmAgePatientVisitor)
         age = confirmAgePatientVisitor.getResult()
         
         historyTotalDotPatientVisitor = HistoryTotalDotPatientVisitor()
-        historyTotalDotPatientVisitor.visitPatient(patient)
+        patient.accept_visitor(historyTotalDotPatientVisitor)
         dot = historyTotalDotPatientVisitor.getResult()
         
         historyTypePatientVisitor = HistoryTypePatientVisitor()
-        historyTypePatientVisitor.visitPatient(patient)
+        patient.accept_visitor(historyTypePatientVisitor)
         history_type = historyTypePatientVisitor.getResult()
         
         historyICDPatientVisitor = HistoryICDPatientVisitor()
-        historyICDPatientVisitor.visitPatient(patient)
+        patient.accept_visitor(historyICDPatientVisitor)
         history_icd = historyICDPatientVisitor.getResult()
         
         historyMEPatientVisitor = HistoryMEPatientVisitor()
-        historyMEPatientVisitor.visitPatient(patient)
+        patient.accept_visitor(historyMEPatientVisitor)
         history_me = historyMEPatientVisitor.getResult()
         
         model_columns_list = list(pd.read_pickle('../data/model_columns_list.pkl')['key'])

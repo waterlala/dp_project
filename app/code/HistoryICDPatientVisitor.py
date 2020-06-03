@@ -8,7 +8,7 @@ from ThreeYearRecordFilter import ThreeYearRecordFilter
 class HistoryICDPatientVisitor(PatientVisitor):
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
-        confirmDatePatientVisitor.visitPatient(patient)
+        patient.accept_visitor(confirmDatePatientVisitor)
         confirm_date = confirmDatePatientVisitor.getResult()
         
         df = patient.get_record()

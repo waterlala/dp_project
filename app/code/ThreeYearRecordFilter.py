@@ -1,10 +1,12 @@
 from RecordFilter import RecordFilter
+import pandas as pd
 
 class ThreeYearRecordFilter(RecordFilter):
     def __init__(self, confirm_date):
         self._confirm_date = confirm_date
     def execute(self, record):
-        df = record
+        df = pd.DataFrame()
+        df = record.copy()
         df['confirm_date'] = self._confirm_date
         df['InDate'] = df['InDate'].astype('datetime64')
         df['different'] = df['confirm_date'] - df['InDate']

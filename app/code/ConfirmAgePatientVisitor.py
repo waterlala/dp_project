@@ -7,7 +7,7 @@ from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 class ConfirmAgePatientVisitor(PatientVisitor):
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
-        confirmDatePatientVisitor.visitPatient(patient)
+        patient.accept_visitor(confirmDatePatientVisitor)
         confirm_date = confirmDatePatientVisitor.getResult()
         df = pd.DataFrame(columns = ['birth','confirm_date'])
         df.loc[0] = [patient.get_birth(),confirm_date]

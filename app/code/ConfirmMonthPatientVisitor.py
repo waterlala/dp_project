@@ -7,6 +7,6 @@ from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 class ConfirmMonthPatientVisitor(PatientVisitor):
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
-        confirmDatePatientVisitor.visitPatient(patient)
+        patient.accept_visitor(confirmDatePatientVisitor)
         confirm_date = confirmDatePatientVisitor.getResult()
         self.result = confirm_date.month
