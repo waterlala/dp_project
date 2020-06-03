@@ -20,5 +20,3 @@ class AreaPatientVisitor(PatientVisitor):
         df = df[(df['different']>=0)&(df['different']<=7)]
         
         self.result = df['Area'].value_counts().sort_values(ascending = False).index[0]
-        
-
