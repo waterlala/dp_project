@@ -5,9 +5,6 @@ from PatientVisitor import PatientVisitor
 from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 
 class ConfirmAgePatientVisitor(PatientVisitor):
-    def __init__(self):
-        self.age = np.nan
-        
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
         confirmDatePatientVisitor.visitPatient(patient)
@@ -18,7 +15,4 @@ class ConfirmAgePatientVisitor(PatientVisitor):
         df['different'] = df['different'].apply(lambda x: x.days)
         df['different'] = df['different'].apply(lambda x: x/365)
         df = df.rename(columns = {'different':'age'})
-        self.age = df[['age']]
-        
-    def getResult(self):
-        return self.age
+        self.result = df[['age']].iloc[0].values[0]

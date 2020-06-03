@@ -6,10 +6,6 @@ from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 from ThreeYearRecordFilter import ThreeYearRecordFilter
 
 class HistoryMEPatientVisitor(PatientVisitor):
-    
-    def __init__(self):
-        self.ICD = np.nan
-        
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
         confirmDatePatientVisitor.visitPatient(patient)
@@ -19,11 +15,11 @@ class HistoryMEPatientVisitor(PatientVisitor):
         threeYearRecordFilter = ThreeYearRecordFilter(confirm_date)
         df = threeYearRecordFilter.execute(df)
         
+        df = df.dropna()
+        
         if len(df) != 0:
             col = list(set(list(eval(str(list(df['Drug'])).replace('[','').replace(']','')))))
             out = pd.DataFrame(columns = col)
-            self.ICD = out
+            self.result = out
         else:
-            self.ICD = np.nan
-    def getResult(self):
-        return self.ICD
+            self.result = pd.DataFrame()

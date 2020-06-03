@@ -5,8 +5,6 @@ from PatientVisitor import PatientVisitor
 from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 
 class CardPatientVisitor(PatientVisitor):
-    def __init__(self):
-        self.position = np.nan
     def visitPatient(self, patient):
         df = patient.get_record()[['ID','InDate','ICD9CM']].reset_index(drop=True)
         df['Birth'] = patient.get_birth()
@@ -45,13 +43,4 @@ class CardPatientVisitor(PatientVisitor):
         out_data_y = list(out_data['y'])
         result = pd.DataFrame([out_data_x,out_data_y])
         result.index = ['x','y']
-        self.position = result
-    def getResult(self):
-        return self.position
-
-
-# In[ ]:
-
-
-
-
+        self.result = result

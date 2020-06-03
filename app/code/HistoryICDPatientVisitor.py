@@ -6,10 +6,6 @@ from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 from ThreeYearRecordFilter import ThreeYearRecordFilter
 
 class HistoryICDPatientVisitor(PatientVisitor):
-    
-    def __init__(self):
-        self.ICD = np.nan
-        
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
         confirmDatePatientVisitor.visitPatient(patient)
@@ -22,10 +18,7 @@ class HistoryICDPatientVisitor(PatientVisitor):
         col = list(set(list(eval(str(list(df['ICD9CM'])).replace('[','').replace(']','')))))
         out = pd.DataFrame(columns = col)
         
-        self.ICD = out
-        
-    def getResult(self):
-        return self.ICD
+        self.result = out
 
 
 

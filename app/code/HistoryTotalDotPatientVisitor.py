@@ -6,10 +6,6 @@ from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 from ThreeYearRecordFilter import ThreeYearRecordFilter
 
 class HistoryTotalDotPatientVisitor(PatientVisitor):
-    
-    def __init__(self):
-        self.TotalDot = np.nan
-        
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
         confirmDatePatientVisitor.visitPatient(patient)
@@ -19,16 +15,4 @@ class HistoryTotalDotPatientVisitor(PatientVisitor):
         threeYearRecordFilter = ThreeYearRecordFilter(confirm_date)
         df = threeYearRecordFilter.execute(df)
         
-        out = pd.DataFrame(columns = ['TotalDot'])
-        out.loc[0] = df['TotalDot'].sum()
-        
-        self.TotalDot = out
-        
-    def getResult(self):
-        return self.TotalDot
-
-
-
-
-
-
+        self.result =  df['TotalDot'].sum()

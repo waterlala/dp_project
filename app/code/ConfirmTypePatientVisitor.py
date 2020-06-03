@@ -5,9 +5,6 @@ from PatientVisitor import PatientVisitor
 from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 
 class ConfirmTypePatientVisitor(PatientVisitor):
-    def __init__(self):
-        self.type = np.nan
-        
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
         confirmDatePatientVisitor.visitPatient(patient)
@@ -20,17 +17,4 @@ class ConfirmTypePatientVisitor(PatientVisitor):
         for type in list(df['Type']):
             if int(type)>save:
                 save = int(type)
-        type_list = []
-        data_list = [] 
-        for i in range(0,3,1):
-            type_list.append('type_'+str(i))
-            if i==save:
-                data_list.append(1)
-            else:
-                data_list.append(0)
-        out = pd.DataFrame(columns = type_list)
-        out.loc[0]=data_list
-        self.type = out
-        
-    def getResult(self):
-        return self.type
+        self.result = save

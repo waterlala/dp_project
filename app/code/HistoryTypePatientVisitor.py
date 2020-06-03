@@ -6,10 +6,6 @@ from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 from ThreeYearRecordFilter import ThreeYearRecordFilter
 
 class HistoryTypePatientVisitor(PatientVisitor):
-    
-    def __init__(self):
-        self.Type = np.nan
-        
     def visitPatient(self, patient):
         confirmDatePatientVisitor = ConfirmDatePatientVisitor()
         confirmDatePatientVisitor.visitPatient(patient)
@@ -30,10 +26,7 @@ class HistoryTypePatientVisitor(PatientVisitor):
                 out_list.append(0)
         out.loc[0] = out_list
         
-        self.Type = out
-        
-    def getResult(self):
-        return self.Type
+        self.result = out
 
 
 
