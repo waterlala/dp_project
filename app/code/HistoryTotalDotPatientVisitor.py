@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
 import numpy as np
 import pandas as pd
 import datetime
@@ -34,7 +28,6 @@ class HistoryTotalDotPatientVisitor(PatientVisitor):
         return self.TotalDot
 
 
-# In[ ]:
 
 
 

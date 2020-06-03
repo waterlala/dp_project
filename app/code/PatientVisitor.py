@@ -1,6 +1,10 @@
 from Patient import Patient
-class PatientVisitor:
-     def __init__(self):
-        self.visitPatient(self, patient)
-        self.getResult(self)
 
+class PatientVisitor:
+   def __init__(self):
+      self.result = None
+   def visitPatient(self, patient):
+      pass
+   def getResult(self):
+      return self.result
+      

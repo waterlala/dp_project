@@ -2,7 +2,7 @@ from RecordFilter import RecordFilter
 
 class ThreeYearRecordFilter(RecordFilter):
     def __init__(self, confirm_date):
-        self._confirm_date = confirm_date;
+        self._confirm_date = confirm_date
     def execute(self, record):
         df = record
         df['confirm_date'] = self._confirm_date
