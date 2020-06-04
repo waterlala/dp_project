@@ -3,11 +3,11 @@ from Patient import Patient
 
 class PatientVisitor(abc.ABC):
    def __init__(self):
-      self.result = None
+      self.__result = None
    @abc.abstractclassmethod
-   def visitPatient(self, patient):
+   def visit_patient(self, patient):
       return NotImplemented
    @abc.abstractclassmethod
-   def getResult(self):
+   def get_result(self):
       return NotImplemented
       
