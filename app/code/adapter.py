@@ -1,6 +1,4 @@
-from .io import IO
-
-
+from InOutput import InOutput
 
 #需全改 IO 要回傳dataframe 再用adapter 轉 json回傳
 class Adapter:

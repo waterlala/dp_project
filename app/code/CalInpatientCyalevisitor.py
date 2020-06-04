@@ -3,7 +3,7 @@ import numpy as np
 from datetime import date, datetime, timedelta
 from Patient import Patient
 from PatientVisitor import PatientVisitor 
-class CalInpatientCyalevisitor(PatientVisitor):
+class CalInpatientCyaleVisitor(PatientVisitor):
     def __init__(self):
         self.__result = None
     
