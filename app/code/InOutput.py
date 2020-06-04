@@ -4,7 +4,7 @@ import json
 import time
 from PatientParser import PatientParser
 from DataStorage import DataStorage
-from CalInpatientCyaleVisitor import CalInpatientCyaleVisitor
+from CalInpatientCycleVisitor import CalInpatientCycleVisitor
 from CalMeanAllInpatientCycle import CalMeanAllInpatientCycle
 from CalShortTermMortalityRateVisitor import CalShortTermMortalityRateVisitor
 from CalHistoryICDCardVisitor import CalHistoryICDCardVisitor
@@ -102,7 +102,7 @@ class InOutput():
         return position
     
     def __get_personal_inpatient_cycle(self, patient):
-        cycle_visitor = CalInpatientCyaleVisitor()
+        cycle_visitor = CalInpatientCycleVisitor()
         patient.accept_visitor(cycle_visitor)
         return cycle_visitor.get_result()
     
