@@ -1,6 +1,8 @@
+import abc
 import pandas as pd
-class RecordFilter:
+class RecordFilter(abc.ABC):
    def __init__(self):
       pass
+   @abc.abstractclassmethod
    def execute(self, record):
-      pass
+      return NotImplemented

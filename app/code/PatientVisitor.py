@@ -1,10 +1,13 @@
+import abc
 from Patient import Patient
 
-class PatientVisitor:
+class PatientVisitor(abc.ABC):
    def __init__(self):
       self.result = None
+   @abc.abstractclassmethod
    def visitPatient(self, patient):
-      pass
+      return NotImplemented
+   @abc.abstractclassmethod
    def getResult(self):
-      return self.result
+      return NotImplemented
       
