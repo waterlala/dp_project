@@ -31,25 +31,40 @@ class InOutput():
             輸出example => 0.17911194
     """
     def __init__(self):
-        self._data_storage = DataStorage()
-        self._load_data()
+        self.__data_storage = DataStorage()
+        self.__load_data()
+        self.__calculate_group_data()
     def handle_instructions(self, instructions, id):
         if(instructions == "get_personal_info"):
-            patient = self._get_patient_by_id(id)
-            return self.get_personal_info(patient)
-        elif(instructions == "get_icd_category_growth_trend"):
-            patient = self._get_patient_by_id(id)
-            return self.get_icd_category_growth_trend(patient)
-        elif(instructions == "get_personal_inpatient_cycle"):
-            patient = self._get_patient_by_id(id)
-            return self.get_personal_inpatient_cycle(patient)
-        elif(instructions == "get_average_of_all_the_patients_cycles"):
-            return self.get_average_of_all_the_patients_cycles()
-        else:
-            return self._data_storage
-        #elif(instructions == "get_icd_of_the_same_pattern_patient"):
+            patient = self.__get_patient_by_id(id)
+            return self.__get_personal_info(patient)
 
-    def _load_data(self):
+        elif(instructions == "get_icd_category_growth_trend"):
+            patient = self.__get_patient_by_id(id)
+            return self.__get_icd_category_growth_trend(patient)
+
+        elif(instructions == "get_personal_inpatient_cycle"):
+            patient = self.__get_patient_by_id(id)
+            return self.__get_personal_inpatient_cycle(patient)
+
+        elif(instructions == "get_average_of_all_the_patients_cycles"):
+            return self.__data_storage.get_group_result('avg_of_all_inpatient_cycle')
+
+        elif(instructions == "get_shortterm_mortality_rate"):
+            patient = self.__get_patient_by_id(id)
+            return self.__get_shortterm_mortality_rate(patient)
+
+        elif(instructions == "same_patient_survive_time_mean"):
+            patient = self.__get_patient_by_id(id)
+            return self.__get_same_patient_survive_time_mean(patient)
+
+        elif(instructions == "same_patient_after_confirm_disease_value_counts"):
+            patient = self.__get_patient_by_id(id)
+            return self.__get_same_patient_after_confirm_disease_value_counts(patient)
+        else:
+            return self.__data_storage
+
+    def __load_data(self):
         #讀json file
         with open('../data/patient.json','r') as patient_reader:
             patient_data = json.load(patient_reader)
@@ -60,105 +75,64 @@ class InOutput():
         patient_df = pd.DataFrame.from_dict(patient_data , orient='index')
         record_df = pd.DataFrame.from_dict(record_data , orient='index')
         inpatient_df = pd.DataFrame.from_dict(inpatient_data , orient='index')
-        self._build_patient_data(patient_df, record_df, inpatient_df)
+        self.__build_patient_data(patient_df, record_df, inpatient_df)
 
-    def _build_patient_data(self,patient_data, record_data, inpatient_data):
+    def __build_patient_data(self,patient_data, record_data, inpatient_data):
         #建立patient資料 呼叫parser builder
         for id in patient_data['ID'].values:
             patient_parser = PatientParser()
             patient_parser.parse_patient(patient_data, record_data, inpatient_data, id)
-            self._data_storage.add_patient(patient_parser.get_result())
-        
-    
+            self.__data_storage.add_patient(patient_parser.get_result())
+
+    def __calculate_group_data(self):
+        self.__data_storage.add_calculated_result('avg_of_all_inpatient_cycle',self.__get_average_of_all_the_patients_cycles())
+
     #以下要用visitor做
-    def get_personal_info(self, patient):
+    def __get_personal_info(self, patient):
         out = pd.DataFrame(columns = ['id','gender','birthdate'])
         out.loc[0] = [patient.get_id(),patient.get_gender(),patient.get_birth()]
         out['birthdate'] = out['birthdate'].astype('datetime64')
         return out
     
-    def get_icd_category_growth_trend(self, patient):
+    def __get_icd_category_growth_trend(self, patient):
         cardPatientVisitor = CalHistoryICDCardVisitor()
         patient.accept_visitor(cardPatientVisitor)
         position = cardPatientVisitor.get_result()
         return position
     
-    def get_personal_inpatient_cycle(self, patient):
+    def __get_personal_inpatient_cycle(self, patient):
         cycle_visitor = CalInpatientCyalevisitor()
         patient.accept_visitor(cycle_visitor)
         return cycle_visitor.get_result()
     
-    def get_average_of_all_the_patients_cycles(self):
-        patient_list = self._data_storage.iter_patient_list()
+    def __get_average_of_all_the_patients_cycles(self):
+        patient_list = self.__data_storage.iter_patient_list()
         cycle_mean_visitor = CalMeanAllInpatientCycle()
         for patient in patient_list:
             patient.accept_visitor(cycle_mean_visitor)
         return cycle_mean_visitor.get_result()
     
-    def get_quickly_death_possible(self, patient):
+    def __get_shortterm_mortality_rate(self, patient):
         quicklyDeathPatientVisitor = CalShortTermMortalityRateVisitor()
         patient.accept_visitor(quicklyDeathPatientVisitor)
         death_posible = quicklyDeathPatientVisitor.get_result()
         return death_posible
     
-    def get_same_patient_survive_time_mean(self, patient):
-        calSamePatientDeathMeanTimePatientVisitor = CalSamePatientSurviveTimeMeanVisitor(self._data_storage)
+    def __get_same_patient_survive_time_mean(self, patient):
+        calSamePatientDeathMeanTimePatientVisitor = CalSamePatientSurviveTimeMeanVisitor(self.__data_storage)
         patient.accept_visitor(calSamePatientDeathMeanTimePatientVisitor)
         mean = calSamePatientDeathMeanTimePatientVisitor.get_result()
         return mean
     
-    def get_same_patient_after_confirm_disease_value_counts(self, patient):
-        getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor = CalSamePatientAfterConfimeICDTimesVisitor(self._data_storage)
+    def __get_same_patient_after_confirm_disease_value_counts(self, patient):
+        getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor = CalSamePatientAfterConfimeICDTimesVisitor(self.__data_storage)
         patient.accept_visitor(getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor)
         a_d_set = getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor.get_result()
         return a_d_set
         
-    def _get_patient_by_id(self, id):
-        for patient in self._data_storage.iter_patient_list():
+    def __get_patient_by_id(self, id):
+        for patient in self.__data_storage.iter_patient_list():
             if id == patient.get_id():
                 search_patient = patient
                 break
         return search_patient
-    """
-    def set_patient_by_id(self, _id):
-        self._main_patient = self._patients[self._patients['ID'] == _id].reset_index(
-            drop='True')
-        self._main_records = self._records[self._records['PatientID'] == _id].reset_index(
-            drop='True')
-
-    def get_patient_personal_data(self):
-        df = self._main_patient[['ID', 'Gender', 'Birth']].rename(
-            columns={'ID': 'id', 'Gender': 'gender', 'Birth': 'birthdate'})
-        df['birthdate'] = df['birthdate'].apply(
-            lambda x: x.strftime("%m-%d-%Y"))
-        return df.to_json(orient='index')
-
-    def get_patients_icd_card(self):
-        return patients_icd_card(self._main_records, self._main_patient).get_result().to_json(orient='index')
-        #return self._main_records.to_json(orient='index')
-
-    def get_patients_by_pattern(self):
-        tree = FPTree()
-        tree.fit(self._desease_sets)
-        pattern = pd.DataFrame(tree.mine(), columns=('Pattern', 'Count'))
-        pattern['Length'] = pattern['Pattern'].apply(len)
-        desease_set = self._desease_sets[self._main_patient['ID'].iloc[0]]
-        match = pattern[pattern['Pattern'].apply(desease_set.issuperset)]
-        pattern = match.sort_values(
-            'Length', ascending=False).iloc[0]['Pattern']
-        return list(self._desease_sets[self._desease_sets.apply(lambda x: x.issuperset(pattern))].index)
-
-    def get_quickly_death_model_point(self):
-        _model_quickly_death = joblib.load('model_quickly_death.pkl')
-        _model_quickly_death_data = pd.read_pickle(
-            'model_death_quickly_data_single_patients.pickle')
-        _model_death_quickly_data_list = pd.read_pickle(
-            'model_death_quickly_data_list.pickle')
-        _model_quickly_death_data = _model_quickly_death_data[
-            _model_quickly_death_data['ID'] == self._main_patient.ID.iloc[0]]
-        _model_quickly_death_data = _model_quickly_death_data.drop(
-            ['ID', 'is_quickly'], axis=1)
-        _model_quickly_death_data = _model_quickly_death_data.loc[:, list(
-            _model_death_quickly_data_list[0])]
-        return _model_quickly_death.predict_proba(_model_quickly_death_data)[0][1]
-    """
