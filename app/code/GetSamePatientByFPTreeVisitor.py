@@ -3,13 +3,17 @@ import pandas as pd
 import datetime
 from FP_growth import FPTree
 from PatientVisitor import PatientVisitor
+from GetAllPatientHistoryDiseaseSetVisitor import GetAllPatientHistoryDiseaseSetVisitor
 
 class GetSamePatientByFPTreeVisitor(PatientVisitor):
     def __init__(self, data_storage):
         self.__data_storage = data_storage
         
     def visit_patient(self, patient):
-        desease_sets = pd.read_pickle('../data/disease_sets.pkl.zip')
+        getAllPatientHistoryDiseaseSetVisitor = GetAllPatientHistoryDiseaseSetVisitor(self.__data_storage)
+        patient.accept_visitor(getAllPatientHistoryDiseaseSetVisitor)
+        desease_sets = getAllPatientHistoryDiseaseSetVisitor.get_result()
+        
         tree = FPTree()
         tree.fit(desease_sets)
         pattern = pd.DataFrame(tree.mine(), columns=('Pattern', 'Count'))
