@@ -12,12 +12,13 @@ class CalInpatientCycleVisitor(PatientVisitor):
         if(type(inpatient) != type(None)):
             inpatient['InAge'] = inpatient['InAge'] //5 *5
             cycle_data = self.__cal_intervel(inpatient)
-            cycle_dict = self.__create_complete_data(cycle_data)
-            cycle_dict = cycle_dict.reset_index()
-            cycle_dict = cycle_dict.rename(columns = {'index':'age',0:'cycle'})
-            age = cycle_dict['age'].agg(lambda x: x.tolist())
-            cycle = cycle_dict['cycle'].agg(lambda x: x.tolist())
-            self.__result = pd.DataFrame(data = {'x' : [age], 'y' :[cycle]})
+            if(type(cycle_data) != type(None)):
+                cycle_dict = self.__create_complete_data(cycle_data)
+                cycle_dict = cycle_dict.reset_index()
+                cycle_dict = cycle_dict.rename(columns = {'index':'age',0:'cycle'})
+                age = cycle_dict['age'].agg(lambda x: x.tolist())
+                cycle = cycle_dict['cycle'].agg(lambda x: x.tolist())
+                self.__result = pd.DataFrame(data = {'x' : [age], 'y' :[cycle]})
 
     def __cal_intervel(self, inpatient_data):
         inpatient_data['sn'] = [x for x in range(0,len(inpatient_data))]
@@ -59,16 +60,16 @@ class CalInpatientCycleVisitor(PatientVisitor):
         cur_age_index = -1
         for list_age in interval_list.keys():
             if list_age == min:
-                interval_list[list_age] = cycle_data.loc[cycle_data['age'] == list_age,'interval'].values[0]
+                interval_list[list_age] = cycle_data.loc[cycle_data['age'] == list_age,'cycle'].values[0]
                 cur_age_index = cycle_data.loc[cycle_data['age'] == list_age].index.values.astype(int)[0]
             elif list_age == max:
-                interval_list[list_age] = cycle_data.loc[cycle_data['age'] == list_age,'interval'].values[0]
+                interval_list[list_age] = cycle_data.loc[cycle_data['age'] == list_age,'cycle'].values[0]
                 break
             elif list_age > min and list_age < max and cur_age_index != -1:
                 if list_age < cycle_data.loc[cycle_data.index == cur_age_index+1,'age'].values[0]:
-                    interval_list[list_age] = cycle_data.loc[cycle_data.index == cur_age_index,'interval'].values[0]
+                    interval_list[list_age] = cycle_data.loc[cycle_data.index == cur_age_index,'cycle'].values[0]
                 else:
-                    interval_list[list_age] = cycle_data.loc[cycle_data.index == cur_age_index+1,'interval'].values[0]
+                    interval_list[list_age] = cycle_data.loc[cycle_data.index == cur_age_index+1,'cycle'].values[0]
                     cur_age_index+=1
         ans = pd.Series(data = list(interval_list.values()) ,index = (interval_list.keys()))
         return pd.DataFrame(ans)
