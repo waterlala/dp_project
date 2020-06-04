@@ -3,19 +3,21 @@ import numpy as np
 from datetime import date, datetime, timedelta
 from Patient import Patient
 from PatientVisitor import PatientVisitor 
-class CalculateInpatientCyalevisitor(PatientVisitor):
+class CalInpatientCyalevisitor(PatientVisitor):
     def __init__(self):
         self.__result = None
     
     def visit_patient(self, patient):
         inpatient = patient.get_inpatient()
-        cycle_data = self.__cal_intervel(inpatient)
-        cycle_dict = self.__create_complete_data(cycle_data)
-        cycle_dict = cycle_dict.reset_index()
-        cycle_dict = cycle_dict.rename(columns = {'index':'age',0:'interval'})
-        age = cycle_dict['age'].agg(lambda x: x.tolist())
-        interval = cycle_dict['interval'].agg(lambda x: x.tolist())
-        self.__result = pd.DataFrame(data = {'x' : [age], 'y' :[interval]})
+        if(type(inpatient) != type(None)):
+            inpatient['InAge'] = inpatient['InAge'] //5 *5
+            cycle_data = self.__cal_intervel(inpatient)
+            cycle_dict = self.__create_complete_data(cycle_data)
+            cycle_dict = cycle_dict.reset_index()
+            cycle_dict = cycle_dict.rename(columns = {'index':'age',0:'cycle'})
+            age = cycle_dict['age'].agg(lambda x: x.tolist())
+            cycle = cycle_dict['cycle'].agg(lambda x: x.tolist())
+            self.__result = pd.DataFrame(data = {'x' : [age], 'y' :[cycle]})
 
     def __cal_intervel(self, inpatient_data):
         inpatient_data['sn'] = [x for x in range(0,len(inpatient_data))]
@@ -44,7 +46,7 @@ class CalculateInpatientCyalevisitor(PatientVisitor):
             list_index = [x for x in range(0,len(age_list))]
             interval_data = pd.Series(data = avg_interval ,index = list_index)
             age_data = pd.Series(data = age_list ,index = list_index)
-            return pd.DataFrame({ 'age':age_data, 'interval': interval_data})
+            return pd.DataFrame({ 'age':age_data, 'cycle': interval_data})
     
     def __create_complete_data(self, cycle_data):
         default_value = 0

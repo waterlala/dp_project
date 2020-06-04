@@ -4,6 +4,8 @@ import json
 import time
 from PatientParser import PatientParser
 from DataStorage import DataStorage
+from CalInpatientCyalevisitor import CalInpatientCyalevisitor
+from CalMeanAllInpatientCycle import CalMeanAllInpatientCycle
 from CalShortTermMortalityRateVisitor import CalShortTermMortalityRateVisitor
 from CalHistoryICDCardVisitor import CalHistoryICDCardVisitor
 from CalSamePatientSurviveTimeMeanVisitor import CalSamePatientSurviveTimeMeanVisitor
@@ -31,14 +33,16 @@ class InOutput():
     def __init__(self):
         self._data_storage = DataStorage()
         self._load_data()
-        pass
     def handle_instructions(self, instructions, id):
         if(instructions == "get_personal_info"):
-            return self.get_personal_info(id)
+            patient = self._get_patient_by_id(id)
+            return self.get_personal_info(patient)
         elif(instructions == "get_icd_category_growth_trend"):
-            return self.get_icd_category_growth_trend(id)
+            patient = self._get_patient_by_id(id)
+            return self.get_icd_category_growth_trend(patient)
         elif(instructions == "get_personal_inpatient_cycle"):
-            return self.get_personal_inpatient_cycle(id)
+            patient = self._get_patient_by_id(id)
+            return self.get_personal_inpatient_cycle(patient)
         elif(instructions == "get_average_of_all_the_patients_cycles"):
             return self.get_average_of_all_the_patients_cycles()
         else:
@@ -67,42 +71,43 @@ class InOutput():
         
     
     #以下要用visitor做
-    def get_personal_info(self, id):
+    def get_personal_info(self, patient):
         out = pd.DataFrame(columns = ['id','gender','birthdate'])
-        patient = self._get_patient_by_id(id)
         out.loc[0] = [patient.get_id(),patient.get_gender(),patient.get_birth()]
         out['birthdate'] = out['birthdate'].astype('datetime64')
         return out
     
-    def get_icd_category_growth_trend(self, id):
-        patient = self._get_patient_by_id(id)
+    def get_icd_category_growth_trend(self, patient):
         cardPatientVisitor = CalHistoryICDCardVisitor()
         patient.accept_visitor(cardPatientVisitor)
         position = cardPatientVisitor.get_result()
         return position
     
-    def get_personal_inpatient_cycle(self, id):
-        pass
+    def get_personal_inpatient_cycle(self, patient):
+        cycle_visitor = CalInpatientCyalevisitor()
+        patient.accept_visitor(cycle_visitor)
+        return cycle_visitor.get_result()
     
     def get_average_of_all_the_patients_cycles(self):
-        pass
+        patient_list = self._data_storage.iter_patient_list()
+        cycle_mean_visitor = CalMeanAllInpatientCycle()
+        for patient in patient_list:
+            patient.accept_visitor(cycle_mean_visitor)
+        return cycle_mean_visitor.get_result()
     
-    def get_quickly_death_possible(self, id):
-        patient = self._get_patient_by_id(id)
+    def get_quickly_death_possible(self, patient):
         quicklyDeathPatientVisitor = CalShortTermMortalityRateVisitor()
         patient.accept_visitor(quicklyDeathPatientVisitor)
         death_posible = quicklyDeathPatientVisitor.get_result()
         return death_posible
     
-    def get_same_patient_survive_time_mean(self, id):
-        patient = self._get_patient_by_id(id)
+    def get_same_patient_survive_time_mean(self, patient):
         calSamePatientDeathMeanTimePatientVisitor = CalSamePatientSurviveTimeMeanVisitor(self._data_storage)
         patient.accept_visitor(calSamePatientDeathMeanTimePatientVisitor)
         mean = calSamePatientDeathMeanTimePatientVisitor.get_result()
         return mean
     
-    def get_same_patient_after_confirm_disease_value_counts(self, id):
-        patient = self._get_patient_by_id(id)
+    def get_same_patient_after_confirm_disease_value_counts(self, patient):
         getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor = CalSamePatientAfterConfimeICDTimesVisitor(self._data_storage)
         patient.accept_visitor(getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor)
         a_d_set = getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor.get_result()
