@@ -2,10 +2,9 @@ import numpy as np
 import pandas as pd
 import datetime
 from PatientVisitor import PatientVisitor
-from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
 
-class CardPatientVisitor(PatientVisitor):
-    def visitPatient(self, patient):
+class CalHistoryICDCardVisitor(PatientVisitor):
+    def visit_patient(self, patient):
         df = patient.get_record()[['ID','InDate','ICD9CM']].reset_index(drop=True)
         df['Birth'] = patient.get_birth()
         df['InDate'] = df['InDate'].astype('datetime64')
@@ -41,6 +40,7 @@ class CardPatientVisitor(PatientVisitor):
         out_data = out_data.fillna(0)
         out_data_x = list(out_data['x'])
         out_data_y = list(out_data['y'])
-        result = pd.DataFrame([out_data_x,out_data_y])
-        result.index = ['x','y']
-        self.result = result
+        self.__result = pd.DataFrame(data = {'x':[out_data_x],'y':[out_data_y]})
+    def get_result(self):
+        return self.__result
+        

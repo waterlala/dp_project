@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 import datetime
 from PatientVisitor import PatientVisitor
-from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
+from CalConfirm410DateVisitor import CalConfirm410DateVisitor
 from ThreeYearRecordFilter import ThreeYearRecordFilter
 
-class HistoryMEPatientVisitor(PatientVisitor):
-    def visitPatient(self, patient):
-        confirmDatePatientVisitor = ConfirmDatePatientVisitor()
-        patient.accept_visitor(confirmDatePatientVisitor)
-        confirm_date = confirmDatePatientVisitor.getResult()
+class CalHistoryMEVisitor(PatientVisitor):
+    def visit_patient(self, patient):
+        calConfirm410DateVisitor = CalConfirm410DateVisitor()
+        patient.accept_visitor(calConfirm410DateVisitor)
+        confirm_date = calConfirm410DateVisitor.get_result()
         
         df = patient.get_inpatient()
         threeYearRecordFilter = ThreeYearRecordFilter(confirm_date)
@@ -20,6 +20,9 @@ class HistoryMEPatientVisitor(PatientVisitor):
         if len(df) != 0:
             col = list(set(list(eval(str(list(df['Drug'])).replace('[','').replace(']','')))))
             out = pd.DataFrame(columns = col)
-            self.result = out
+            self.__result = out
         else:
-            self.result = pd.DataFrame()
+            self.__result = pd.DataFrame()
+        
+    def get_result(self):
+        return self.__result

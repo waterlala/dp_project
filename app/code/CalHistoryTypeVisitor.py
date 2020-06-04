@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 import datetime
 from PatientVisitor import PatientVisitor
-from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
+from CalConfirm410DateVisitor import CalConfirm410DateVisitor
 from ThreeYearRecordFilter import ThreeYearRecordFilter
 
-class HistoryTypePatientVisitor(PatientVisitor):
-    def visitPatient(self, patient):
-        confirmDatePatientVisitor = ConfirmDatePatientVisitor()
-        patient.accept_visitor(confirmDatePatientVisitor)
-        confirm_date = confirmDatePatientVisitor.getResult()
+class CalHistoryTypeVisitor(PatientVisitor):
+    def visit_patient(self, patient):
+        calConfirm410DateVisitor = CalConfirm410DateVisitor()
+        patient.accept_visitor(calConfirm410DateVisitor)
+        confirm_date = calConfirm410DateVisitor.get_result()
         
         df = patient.get_record()
         threeYearRecordFilter = ThreeYearRecordFilter(confirm_date)
@@ -26,8 +26,9 @@ class HistoryTypePatientVisitor(PatientVisitor):
                 out_list.append(0)
         out.loc[0] = out_list
         
-        self.result = out
-
+        self.__result = out
+    def get_result(self):
+        return self.__result
 
 
 

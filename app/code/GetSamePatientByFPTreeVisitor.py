@@ -4,11 +4,11 @@ import datetime
 from FP_growth import FPTree
 from PatientVisitor import PatientVisitor
 
-class FindPatientByFPTreePatientVisitor(PatientVisitor):
+class GetSamePatientByFPTreeVisitor(PatientVisitor):
     def __init__(self, data_storage):
-        self._data_storage = data_storage
+        self.__data_storage = data_storage
         
-    def visitPatient(self, patient):
+    def visit_patient(self, patient):
         desease_sets = pd.read_pickle('../data/disease_sets.pkl.zip')
         tree = FPTree()
         tree.fit(desease_sets)
@@ -22,7 +22,10 @@ class FindPatientByFPTreePatientVisitor(PatientVisitor):
         patients = desease_sets[desease_sets.apply(lambda x: x.issuperset(pattern))].index
         patients = list(patients)
         save_patients = list()
-        for patient in self._data_storage.iter_patient_list():
+        for patient in self.__data_storage.iter_patient_list():
             if patient.get_id() in patients:
                 save_patients.append(patient)
-        self.result = save_patients
+        self.__result = save_patients
+    
+    def get_result(self):
+        return self.__result

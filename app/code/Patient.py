@@ -23,5 +23,5 @@ class Patient():
     def get_inpatient(self):
         return self._inpatient
     def accept_visitor(self, visitor):
-        visitor.visitPatient(self)
+        visitor.visit_patient(self)
     

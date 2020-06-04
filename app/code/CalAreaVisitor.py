@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 import datetime
 from PatientVisitor import PatientVisitor
-from ConfirmDatePatientVisitor import ConfirmDatePatientVisitor
+from CalConfirm410DateVisitor import CalConfirm410DateVisitor
 
-class AreaPatientVisitor(PatientVisitor):
-    def visitPatient(self, patient):
+class CalAreaVisitor(PatientVisitor):
+    def visit_patient(self, patient):
         
-        confirmDatePatientVisitor = ConfirmDatePatientVisitor()
-        patient.accept_visitor(confirmDatePatientVisitor)
-        confirm_date = confirmDatePatientVisitor.getResult()
+        calConfirm410DateVisitor = CalConfirm410DateVisitor()
+        patient.accept_visitor(calConfirm410DateVisitor)
+        confirm_date = calConfirm410DateVisitor.get_result()
 
         df = patient.get_record().reset_index(drop=True)
         df = df[['InDate','Area']]
@@ -19,4 +19,7 @@ class AreaPatientVisitor(PatientVisitor):
         df['different'] = df['different'].apply(lambda x: x.days)
         df = df[(df['different']>=0)&(df['different']<=7)]
         
-        self.result = df['Area'].value_counts().sort_values(ascending = False).index[0]
+        self.__result = df['Area'].value_counts().sort_values(ascending = False).index[0]
+    
+    def get_result(self):
+        return self.__result
