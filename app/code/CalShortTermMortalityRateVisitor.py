@@ -75,7 +75,8 @@ class CalShortTermMortalityRateVisitor(PatientVisitor):
         to_machine_dataframe = to_machine_dataframe.astype('int64')
         with open('../data/model.pickle', 'rb') as f:
             model = pickle.load(f)
-        self.__result = pd.DataFrame(model.predict_proba(to_machine_dataframe[0:1]))[1].values[0]
+        ans = pd.DataFrame(model.predict_proba(to_machine_dataframe[0:1]))[1].values[0]
+        self.__result = float(ans)
 
     def get_result(self):
         return self.__result

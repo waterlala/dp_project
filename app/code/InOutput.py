@@ -83,6 +83,7 @@ class InOutput():
         out = pd.DataFrame(columns = ['id','gender','birthdate'])
         out.loc[0] = [patient.get_id(),patient.get_gender(),patient.get_birth()]
         out['birthdate'] = out['birthdate'].astype('datetime64')
+        out['birthdate'] = out['birthdate'].astype('str')
         return out
     
     def __get_icd_category_growth_trend(self, patient):
@@ -116,9 +117,9 @@ class InOutput():
         return mean
     
     def __get_same_patient_after_confirm_disease_value_counts(self, patient):
-        getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor = CalSamePatientAfterConfimeICDTimesVisitor(self.__data_storage)
-        patient.accept_visitor(getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor)
-        a_d_set = getAllPatientAfterConfirmDiseaseSetValueCountPatientVisitor.get_result()
+        calSamePatientAfterConfimeICDTimesVisitor = CalSamePatientAfterConfimeICDTimesVisitor(self.__data_storage)
+        patient.accept_visitor(calSamePatientAfterConfimeICDTimesVisitor)
+        a_d_set = calSamePatientAfterConfimeICDTimesVisitor.get_result()
         return a_d_set
         
     def __get_patient_by_id(self, id):

@@ -22,7 +22,8 @@ class CalSamePatientAfterConfimeICDTimesVisitor(PatientVisitor):
             patient.accept_visitor(getAfterConfirmICDVisitor)
             d_set = getAfterConfirmICDVisitor.get_result()
             all_disease = all_disease + d_set
-        self.__result = pd.Series(all_disease).value_counts().reset_index().rename(columns = {'index':'disease',0:'times'}).sort_values('times',ascending = False)
+        df = pd.Series(all_disease).value_counts().reset_index().rename(columns = {'index':'disease',0:'times'}).sort_values('times',ascending = False)
+        self.__result = df.iloc[:10]
     
     def get_result(self):
         return self.__result
