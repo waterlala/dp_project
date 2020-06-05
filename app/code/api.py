@@ -23,19 +23,28 @@ def inpatient():
     patientid = request.values.get('patientid')
     return str(df_json_adapter.handle_instructions("get_personal_inpatient_cycle",patientid))
 
-@app.route('/inpatient_mean', methods=['POST'])
-def inpatient_mean():
-    return str(df_json_adapter.handle_instructions("get_average_of_all_the_patients_cycles",""))
-
 @app.route('/shorterm_death_prob', methods=['POST'])
 def shorterm_death_prob():
     patientid = request.values.get('patientid')
     return str(df_json_adapter.handle_instructions("get_shortterm_mortality_rate",patientid))
 
-@app.route('/pattern_patients', methods=['POST'])
-def pattern_patients():
+#--
+@app.route('/survive_time_mean', methods=['POST'])
+def survive_time_mean():
     patientid = request.values.get('patientid')
-    return str(df_json_adapter.handle_instructions(,patientid))
+    return str(df_json_adapter.handle_instructions("same_patient_survive_time_mean",patientid))
+
+@app.route('/disease_value_counts', methods=['POST'])
+def disease_value_counts():
+    patientid = request.values.get('patientid')
+    return str(df_json_adapter.handle_instructions("same_patient_after_confirm_disease_value_counts",patientid))
+#--
+
+
+@app.route('/inpatient_mean', methods=['POST'])
+def inpatient_mean():
+    return str(df_json_adapter.handle_instructions("get_average_of_all_the_patients_cycles",""))
+
 
 
 

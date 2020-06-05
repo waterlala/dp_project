@@ -9,12 +9,12 @@ class Adapter(InOutput):
         self.__io = io
     def handle_instructions(self, instructions, id):
         result = self.__io.handle_instructions(instructions, id)
-        if(isinstance(result, None)):
-            return "{}"
-        elif(isinstance(result, pd.DataFrame)):
+        if(isinstance(result, pd.DataFrame)):
             return result.to_json(orient='index')
         elif(isinstance(result,float)):
             float_dict = {}
             float_dict["instructions"] = result
             return json.dumps(float_dict)
+        else:
+            return {}
             
