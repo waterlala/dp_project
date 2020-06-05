@@ -13,7 +13,7 @@ class Adapter(InOutput):
             return result.to_json(orient='index')
         elif(isinstance(result,float)):
             float_dict = {}
-            float_dict["instructions"] = result
+            float_dict[instructions] = result
             return json.dumps(float_dict)
         else:
             return {}
